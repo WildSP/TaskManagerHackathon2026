@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    body {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="relative w-screen h-screen overflow-hidden bg-black">
+
+  <img
+    id="bg"
+    src="Task Manager.png"
+    class="w-full h-full object-contain"
+  />
+
+  <!-- Checklist overlay -->
+  <div class="absolute top-10 left-10 bg-white/60 text-white p-4 rounded w-64">
+    
+    <div class="flex gap-2 mb-3">
+      <input id="itemInput" class="text-black p-1 w-full" placeholder="New item">
+      <button onclick="addItem()" class="bg-green-500 px-2 rounded">+</button>
+    </div>
+
+    <ul id="list" class="space-y-2"></ul>
+
+  </div>
+
+</div>
+
+<script>
+function addItem() {
+  const input = document.getElementById("itemInput");
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  const li = document.createElement("li");
+  li.className = "flex items-center justify-between gap-2";
+
+  li.innerHTML = `
+    <label class="flex items-center gap-2">
+      <input type="checkbox" onchange="updateProgress()">
+      <span contenteditable="true">${text}</span>
+    </label>
+    <button onclick="this.parentElement.remove()" class="text-red-400">✕</button>
+  `;
+
+  document.getElementById("list").appendChild(li);
+  input.value = "";
+}
+
+function updateProgress() {
+  const checkboxes = document.querySelectorAll("#list input[type='checkbox']");
+
+  let total = checkboxes.length;
+  let checked = 0;
+
+  checkboxes.forEach(cb => {
+    if (cb.checked) checked++;
+  });
+
+  const bg = document.getElementById("bg");
+
+  if (total === 0) {
+    bg.src = "Task Manager.png";
+    return;
+  }
+
+  const percent = checked / total;
+
+  if (percent === 0) {
+    bg.src = "Task Manager.png";
+  }
+  else if (percent < 0.5) {
+    bg.src = "low.png";
+  }
+  else if (percent < 1) {
+    bg.src = "mid.png";
+  }
+  else {
+    bg.src = "done.png";
+  }
+
+
+}
+</script>
+
+</body>
+</html>
